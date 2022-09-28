@@ -27,7 +27,7 @@ class OverwriteStorage(FileSystemStorage):
 class UserProfile(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    bio_file = models.FileField(upload_to="bio", blank=True, null=True, storage=OverwriteStorage())
+    bio = models.CharField(max_length=100, blank=True, null=True)
     picture_file = models.FileField(upload_to="profile_pics", blank=True, null=True)
 
     def __str__(self):

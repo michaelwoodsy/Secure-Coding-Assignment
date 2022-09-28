@@ -45,8 +45,8 @@
           <div class="card-body">
             <label>Bio</label>
             <div class="mb-3">
-              {% if profile.bio_file %}
-                {% include profile.bio_file.path %}
+              {% if profile.bio %}
+                {{ profile.bio }}
               {% endif %}
             </div>
             <label>Their projects</label>
