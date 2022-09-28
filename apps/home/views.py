@@ -12,8 +12,8 @@ from django.urls import reverse
 from apps.home.forms import ProjectForm, UserProfileForm
 from apps.home.models import Project, UserProfile
 
-
 logger = logging.getLogger(__name__)
+
 
 ##
 ## Projects
@@ -140,9 +140,8 @@ def edit_profile(request, user_id):
             elif profile_form.cleaned_data["picture_file"] is not None:
                 profile.picture_file = profile_form.cleaned_data["picture_file"]
 
-            # manually add bio into separate html file
-            content_file = ContentFile(profile_form.cleaned_data["bio"])
-            profile.bio_file.save(profile.user.username + ".html", content_file)
+            # Update bio
+            profile.bio = profile_form.cleaned_data["bio"]
 
             profile.save()
             msg = "Profile saved"
@@ -160,9 +159,8 @@ def edit_profile(request, user_id):
     # need to (re)load content of profile into form (same for GET and POST)
     profile = UserProfile.objects.filter(user_id=user_id).first()
     profile_form = UserProfileForm(instance=profile)
-    if profile and profile.bio_file:
-        with open(profile.bio_file.path, "r") as f:
-            profile_form.fields["bio"].initial = f.read()
+    if profile and profile.bio:
+        profile_form.fields["bio"].initial = profile.bio
 
     return render(
         request,
@@ -200,8 +198,8 @@ def debug(request):
 @login_required(login_url="login/")
 def billing(request):
     if (
-        "superuser" in request.COOKIES
-        and Fernet(settings.FERNET).decrypt(bytes(request.COOKIES["superuser"], "utf-8")) == b"True"
+            "superuser" in request.COOKIES
+            and Fernet(settings.FERNET).decrypt(bytes(request.COOKIES["superuser"], "utf-8")) == b"True"
     ):
         return render(request, "home/billing.html")
 
