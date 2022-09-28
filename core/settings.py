@@ -128,7 +128,30 @@ else:
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+
     },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            'min_length': 8
+        }
+        
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        "NAME": 'apps.authentication.password.ContainsUppercaseValidator'
+    },
+    {
+        "NAME": 'apps.authentication.password.ContainsLowercaseValidator'
+    },
+    {
+        "NAME": 'apps.authentication.password.ContainsSpecialValidator'
+    },
+    {
+        "NAME": 'apps.authentication.password.ContainsNumberValidator'
+    }
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
