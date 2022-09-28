@@ -1,16 +1,12 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
-class ContainsUppercaseValidator:
-    def __init__(self):
-        pass
-
+class ContainsUppercaseValidator(object):
     def validate(self, password, user=None):
-        if not any(p.isUpper() for p in password):
+        if not any(p.isupper() for p in password):
             raise ValidationError(
                 _("This password must contain at least 1 uppercase character."),
                 code='password_no_upper',
-           
             )
 
     def get_help_text(self):
@@ -25,7 +21,7 @@ class ContainsLowercaseValidator:
         pass
 
     def validate(self, password, user=None):
-        if not any(p.isLower() for p in password):
+        if not any(p.islower() for p in password):
             raise ValidationError(
                 _("This password must contain at least 1 lowercase character."),
                 code='password_no_lower',
@@ -61,7 +57,7 @@ class ContainsNumberValidator:
         pass
 
     def validate(self, password, user=None):
-        if not any(not p.isdigit() for p in password):
+        if not any(p.isdigit() for p in password):
             raise ValidationError(
                 _("This password must contain at least 1 number."),
                 code='password_no_number',
@@ -72,3 +68,15 @@ class ContainsNumberValidator:
         return _(
             "Your password must contain at least 1 number."
         )
+
+
+def main():
+    cap = ContainsUppercaseValidator()
+    low = ContainsLowercaseValidator()
+    spec = ContainsSpecialValidator()
+    num = ContainsNumberValidator()
+    p = "GP7QF2@r78UQb"
+    cap.validate(p)
+    low.validate(p)
+    spec.validate(p)
+    num.validate(p)
