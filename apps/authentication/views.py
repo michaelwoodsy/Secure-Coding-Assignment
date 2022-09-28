@@ -104,9 +104,9 @@ def reset_password(request):
 
 
 def user_does_not_exist(form):
-    rawsql = "select * from auth_user where email like '" + form.data["email"] + "'"
+    rawsql = "select * from auth_user where email like %s"
     logger.debug(rawsql)
-    result = User.objects.raw(rawsql)
+    result = User.objects.raw(rawsql, [form.data["email"]])
     logger.debug("query returned %s", serializers.serialize("json", result))
     if len(result) > 0:
         form.add_error("email", "email taken")
