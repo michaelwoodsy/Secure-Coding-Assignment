@@ -11,3 +11,4 @@ django-environ==0.8.1
 aiosmtpd==1.4.2
 black==22.6.0
 cryptography==37.0.4
+django-admin-honeypot==1.1.0

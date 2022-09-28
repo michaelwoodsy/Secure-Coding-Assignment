@@ -10,7 +10,8 @@ from django.urls import path, include, re_path
 from django.views.static import serve
 
 urlpatterns = [
-    path("admin/", admin.site.urls),  # Django admin route
+    path("secret/", admin.site.urls),  # Django admin route
+    path("admin/", include('admin_honeypot.urls', namespace='admin_honeypot')),
     path("", include("apps.authentication.urls")),  # Auth routes - login / register
     re_path(r'^media/(?P<path>.*)$', serve, kwargs={'document_root': settings.MEDIA_ROOT})
 ]
