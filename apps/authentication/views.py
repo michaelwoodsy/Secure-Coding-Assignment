@@ -1,3 +1,4 @@
+from base64 import urlsafe_b64encode
 import logging
 
 from cryptography.fernet import Fernet
@@ -8,11 +9,20 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+
 from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+
+from django.contrib.auth.forms import PasswordResetForm
+
+
 
 from apps.home.models import UserProfile
 
-from .forms import LoginForm, SignUpForm, ResetForm
+from .forms import LoginForm, SignUpForm
 
 logger = logging.getLogger(__name__)
 
@@ -68,39 +78,90 @@ def register_user(request):
 
     return render(request, "accounts/register.html", {"form": form, "msg": msg, "success": success})
 
+  # return render(request, "accounts/password_reset.html", {"form": form, "msg": msg, "success": success})
+  
+# def reset_password(request):
+#     msg = None
+#     success = False
+
+#     if request.method == "POST":
+#         form = PasswordResetForm(request.POST)
+
+#         if form.is_valid():
+#             email = form.cleaned_data.get("email")
+#             user_nullable = User.objects.get(email=email)
+#             if user_nullable is not None:
+#                 uid = urlsafe_base64_encode(force_bytes(user_nullable.id))
+#                 token = default_token_generator.make_token(user_nullable)
+#                 send_reset_password_email(user_nullable, request, uid, token)
+
+#             return render(request, "accounts/password_reset_done.html")
+#         else:
+#             logger.debug(form.data)
+#             msg = "Error/s in form"
+
+#     else:
+#         form = PasswordResetForm()
+
+#     return render(request, "accounts/password_reset.html", {"form": form, "msg": msg, "success": success})
+
+
 
 def reset_password(request):
     msg = None
     success = False
 
     if request.method == "POST":
-        form = ResetForm(request.POST)
+        form = PasswordResetForm(request.POST)
 
-        user = User.objects.filter(username=form.data["username"]).first()
-        if form.is_valid() and user is not None and user.email == form.data["email"]:
-            if form.cleaned_data["password1"] == form.cleaned_data["password2"]:
-                user.set_password(form.cleaned_data["password1"])
-                user.save()
-                send_reset_password_email(form.cleaned_data["email"])
-                success = True
-                msg = "Password reset successfully"
-            else:
-                form.add_error("password2", "Passwords don't match")
-                msg = "Error/s in form"
-
+        if form.is_valid():
+          data = form.cleaned_data.get("email")
+          user_from_email = User.objects.get(email=data)
+          if user_from_email is not None:
+            token = default_token_generator.make_token(user_from_email)
+            send_reset_password_email(user_from_email, request, token)
+              
+          return render(request, "accounts/password_reset_done.html")
         else:
             logger.debug(form.data)
             msg = "Error/s in form"
 
     else:
-        form = ResetForm()
+        form = PasswordResetForm()
 
-    return render(request, "accounts/reset_password.html", {"form": form, "msg": msg, "success": success})
+    return render(request, "accounts/password_reset.html", {"form": form, "msg": msg, "success": success})
 
+
+def send_reset_password_email(user: User, request, token):
+  connection = mail.get_connection()
+  connection.open
+  subject = "Password Reset Requested"
+  email_template_name = "accounts/password_reset_email.txt"
+  host = request.get_host()
+  email_json = {
+  "email": user.email,
+  'domain': host,
+  'site_name': 'Website',
+  "uid": urlsafe_base64_encode(force_bytes(user.id)),
+  "user": user,
+  'token': token,
+  'protocol': 'http',
+  }
+  email = render_to_string(email_template_name, email_json)
+  to_send = mail.EmailMessage(
+      subject,
+      email,
+      "seng402@unsecure.app",
+      [user.email],
+      connection=connection,
+  )
+  to_send.send()
+  connection.close()
 
 ##
 # Helper functions
 ##
+
 
 
 def user_does_not_exist(form):
@@ -138,15 +199,4 @@ def send_confirmation_email(email):
     connection.close()
 
 
-def send_reset_password_email(email):
-    connection = mail.get_connection()
-    connection.open
-    to_send = mail.EmailMessage(
-        "A notification from SENG402 Unsecure App",
-        "You've just reset your email.",
-        "seng402@unsecure.app",
-        [email],
-        connection=connection,
-    )
-    to_send.send()
-    connection.close()
+
