@@ -78,34 +78,6 @@ def register_user(request):
 
     return render(request, "accounts/register.html", {"form": form, "msg": msg, "success": success})
 
-  # return render(request, "accounts/password_reset.html", {"form": form, "msg": msg, "success": success})
-  
-# def reset_password(request):
-#     msg = None
-#     success = False
-
-#     if request.method == "POST":
-#         form = PasswordResetForm(request.POST)
-
-#         if form.is_valid():
-#             email = form.cleaned_data.get("email")
-#             user_nullable = User.objects.get(email=email)
-#             if user_nullable is not None:
-#                 uid = urlsafe_base64_encode(force_bytes(user_nullable.id))
-#                 token = default_token_generator.make_token(user_nullable)
-#                 send_reset_password_email(user_nullable, request, uid, token)
-
-#             return render(request, "accounts/password_reset_done.html")
-#         else:
-#             logger.debug(form.data)
-#             msg = "Error/s in form"
-
-#     else:
-#         form = PasswordResetForm()
-
-#     return render(request, "accounts/password_reset.html", {"form": form, "msg": msg, "success": success})
-
-
 
 def reset_password(request):
     msg = None
