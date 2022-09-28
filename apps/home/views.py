@@ -3,7 +3,6 @@ import logging, os
 from cryptography.fernet import Fernet
 
 from django.conf import settings
-from django.core.files.base import ContentFile
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -78,6 +77,9 @@ def new_project(request):
 
 @login_required(login_url="login/")
 def edit_project(request, project_id, user_id):
+    if request.user.id != user_id:
+        return render(request, "home/page-403.html", {"msg": "cannot edit this project"})
+
     context = {"segment": "index"}
     msg = None
     project = get_object_or_404(Project, pk=project_id)
@@ -121,6 +123,9 @@ def view_profile(request, user_id):
 
 @login_required(login_url="login/")
 def edit_profile(request, user_id):
+    if request.user.id != user_id:
+        return render(request, "home/page-403.html", {"msg": "cannot edit this user"})
+
     context = {"segment": "my_profile"}
     logger.info("GET/POST (edit) profile for %s", user_id)
     profile = get_object_or_404(UserProfile, pk=user_id)
