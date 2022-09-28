@@ -12,6 +12,7 @@ from django.views.static import serve
 urlpatterns = [
     path("admin/", admin.site.urls),  # Django admin route
     path("", include("apps.authentication.urls")),  # Auth routes - login / register
+    # path('accounts/', include('django.contrib.auth.urls')), # Reset password routes
     re_path(r'^media/(?P<path>.*)$', serve, kwargs={'document_root': settings.MEDIA_ROOT})
 ]
 
