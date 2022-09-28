@@ -7,7 +7,7 @@ class UserProfileForm(forms.ModelForm):
         required=False,
         widget=forms.Textarea(attrs={"placeholder": "Tell us more about you", "class": "form-control"}),
     )
-    picture_file = forms.ClearableFileInput(attrs={"class": "form-control"})
+    picture_file = forms.ClearableFileInput(attrs={"class": "form-control", 'accept': 'image/png,image/jpeg'})
 
     class Meta:
         model = UserProfile
@@ -18,7 +18,7 @@ class ProjectForm(forms.ModelForm):
     name = forms.CharField(
         widget=forms.TextInput(attrs={"placeholder": "A descriptive name", "class": "form-control"})
     )
-    picture_file = forms.ClearableFileInput(attrs={"class": "form-control"})
+    picture_file = forms.ClearableFileInput(attrs={"class": "form-control", 'accept': 'image/png,image/jpeg'})
     budget = forms.IntegerField(widget=forms.NumberInput(attrs={"class": "form-control"}))
     members = forms.ModelMultipleChoiceField(
         queryset=UserProfile.objects.all(), widget=forms.CheckboxSelectMultiple()
