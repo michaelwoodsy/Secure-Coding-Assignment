@@ -190,7 +190,11 @@ def django_admin(request):
 
 @login_required(login_url="login/")
 def debug(request):
-    if "Referer" in request.headers and request.headers["Referer"] == settings.TRUSTED_REFERER:
+    if (
+            "Referer" in request.headers and
+            request.headers["Referer"] == settings.TRUSTED_REFERER and
+            request.user.is_superuser
+    ):
         with open(os.path.join(settings.LOGGING_PATH, settings.LOGFILE), "r") as f:
             content = f.read()
         response = HttpResponse(content, "text/plain")
