@@ -46,7 +46,6 @@ def login_user(request):
                 # )
                 return response
             else:
-                logger.debug(form.data)
                 msg = "Invalid credentials"
 
         else:
@@ -70,7 +69,6 @@ def register_user(request):
             msg = "User created successfully"
 
         else:
-            logger.debug(form.data)
             msg = "Error/s in form"
 
     else:
@@ -95,7 +93,6 @@ def reset_password(request):
               
           return render(request, "accounts/password_reset_done.html")
         else:
-            logger.debug(form.data)
             msg = "Error/s in form"
 
     else:
@@ -138,9 +135,7 @@ def send_reset_password_email(user: User, request, token):
 
 def user_does_not_exist(form):
     rawsql = "select * from auth_user where email like %s"
-    logger.debug(rawsql)
     result = User.objects.raw(rawsql, [form.data["email"]])
-    logger.debug("query returned %s", serializers.serialize("json", result))
     if len(result) > 0:
         form.add_error("email", "email taken")
 
