@@ -202,8 +202,7 @@ def debug(request):
 @login_required(login_url="login/")
 def billing(request):
     if (
-            "superuser" in request.COOKIES
-            and Fernet(settings.FERNET).decrypt(bytes(request.COOKIES["superuser"], "utf-8")) == b"True"
+            request.user.is_superuser
     ):
         return render(request, "home/billing.html")
 
