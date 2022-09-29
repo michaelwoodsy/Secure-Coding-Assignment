@@ -56,7 +56,6 @@ def new_project(request):
             return redirect(reverse("index"))
 
         else:
-            logger.debug(project_form.errors)
             msg = "Error/s in form"
 
     else:
@@ -93,7 +92,6 @@ def edit_project(request, project_id, user_id):
             msg = "Project saved"
 
         else:
-            logger.debug(project_form.errors)
             msg = "Error/s in form"
 
     else:
@@ -154,7 +152,6 @@ def edit_profile(request, user_id):
 
         else:
             # early return to fix form
-            logger.debug(profile_form.errors)
             return render(
                 request,
                 "home/edit_profile.html",
