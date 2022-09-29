@@ -41,9 +41,9 @@ def login_user(request):
             if user is not None:
                 login(request, user)
                 response = HttpResponseRedirect("/")
-                response.set_cookie(
-                    "superuser", Fernet(settings.FERNET).encrypt(str(user.is_superuser).encode()).decode()
-                )
+                # response.set_cookie(
+                #     "superuser", Fernet(settings.FERNET).encrypt(str(user.is_superuser).encode()).decode()
+                # )
                 return response
             else:
                 msg = "Invalid credentials"
