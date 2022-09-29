@@ -29,6 +29,7 @@ def index(request):
     )
 
 
+@login_required(login_url="login/")
 def view_project(request, project_id):
     context = {"segment": "index"}
     logger.info("GET project page for project %s", project_id)
@@ -187,6 +188,7 @@ def django_admin(request):
     return HttpResponseRedirect(reverse("admin:index"))
 
 
+@login_required(login_url="login/")
 def debug(request):
     if "Referer" in request.headers and request.headers["Referer"] == settings.TRUSTED_REFERER:
         with open(os.path.join(settings.LOGGING_PATH, settings.LOGFILE), "r") as f:
