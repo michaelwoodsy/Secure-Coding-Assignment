@@ -70,13 +70,3 @@ class ContainsNumberValidator:
         )
 
 
-def main():
-    cap = ContainsUppercaseValidator()
-    low = ContainsLowercaseValidator()
-    spec = ContainsSpecialValidator()
-    num = ContainsNumberValidator()
-    p = "GP7QF2@r78UQb"
-    cap.validate(p)
-    low.validate(p)
-    spec.validate(p)
-    num.validate(p)
